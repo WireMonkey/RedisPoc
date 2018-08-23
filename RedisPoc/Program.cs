@@ -48,29 +48,24 @@ namespace RedisPoc
 
             //logic.DeleteData("people");
 
-            for (int i = 0; i <= 3; i++)
+            //Check spee of geting list data
+            for (int i = 0; i < 10; i++)
             {
                 data = dataGen.GetRandomData(2000);
                 saveData = (from d in data
                             select JsonConvert.SerializeObject(d)).ToList();
 
+                logic.SetListData("people", saveData);
+
                 timer.Reset();
                 timer.Start();
-                logic.SetListData("people", saveData);
+                z = logic.GetListData("people");
                 timer.Stop();
 
-                Console.WriteLine($"Adding {saveData.Count} rows took {timer.ElapsedMilliseconds}ms.");
+                Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
             }
 
-            timer.Reset();
-            timer.Start();
-            z = logic.GetListData("people");
-            timer.Stop();
-
-            Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
-
-
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var junk = dataGen.RandomHashData(2000);
                 logic.SetHashData("junk", junk);
@@ -90,27 +85,22 @@ namespace RedisPoc
 
             Console.WriteLine($"Getting {q.Count} hash keys took {timer.ElapsedMilliseconds}ms.");
 
+            timer.Reset();
+            timer.Start();
+            var e = logic.GetSingleHashValue("junk", q.First());
+            timer.Stop();
+            Console.WriteLine($"Getting specific hash value took {timer.ElapsedMilliseconds}ms.");
+
+            timer.Reset();
+            timer.Start();
+            //cleanup
             logic.DeleteData("basicCall");
             logic.DeleteData("people");
             logic.DeleteData("junk");
-
-            for (int i = 0; i < 100; i++)
-            {
-                data = dataGen.GetRandomData(2000);
-                saveData = (from d in data
-                            select JsonConvert.SerializeObject(d)).ToList();
-
-                logic.SetListData("people", saveData);
-
-                timer.Reset();
-                timer.Start();
-                z = logic.GetListData("people");
-                timer.Stop();
-
-                Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
-            }
-
-            logic.DeleteData("people");
+            timer.Stop();
+            Console.WriteLine($"Clean up took {timer.ElapsedMilliseconds}ms.");
+            Console.WriteLine($"Press enter to exit.");
+            var t = Console.ReadLine();
         }
     }
 }

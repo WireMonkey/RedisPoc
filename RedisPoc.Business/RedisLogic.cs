@@ -97,5 +97,13 @@ namespace RedisPoc.Business
                 return client.GetHashValues(key);
             }
         }
+
+        public string GetSingleHashValue(string key, string id)
+        {
+            using (var client = manager.GetClient())
+            {
+                return client.GetValueFromHash(key, id);
+            }
+        }
     }
 }
