@@ -2,6 +2,7 @@
 using RedisPoc.Business;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RedisPoc
@@ -10,6 +11,7 @@ namespace RedisPoc
     {
         static void Main(string[] args)
         {
+            var timer = new Stopwatch();
             var logic = new RedisLogic();
 
             logic.SetStringData("basicCall", "Hello world");
@@ -26,7 +28,7 @@ namespace RedisPoc
 
             var y = logic.GetAllKeys();
 
-            Console.WriteLine(string.Join(", ",y));
+            Console.WriteLine(string.Join(", ", y));
 
             var dataGen = new RandomData();
 
@@ -34,11 +36,43 @@ namespace RedisPoc
             var saveData = (from d in data
                             select JsonConvert.SerializeObject(d)).ToList();
 
+            timer.Start();
             logic.SetListData("people", saveData);
+            timer.Stop();
+            Console.WriteLine($"Adding {saveData.Count} rows took {timer.ElapsedMilliseconds}ms.");
 
+            timer.Reset();
+            timer.Start();
             var z = logic.GetListData("people");
+            timer.Stop();
 
-            Console.WriteLine(string.Join("/r/n", z));
+            Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
+
+            logic.DeleteData("people");
+
+            for (int i = 0; i <= 100; i++)
+            {
+                data = dataGen.GetRandomData(2000);
+                saveData = (from d in data
+                            select JsonConvert.SerializeObject(d)).ToList();
+
+                timer.Reset();
+                timer.Start();
+                logic.SetListData("people", saveData);
+                timer.Stop();
+
+                Console.WriteLine($"Adding {saveData.Count} rows took {timer.ElapsedMilliseconds}ms.");
+            }
+
+            timer.Reset();
+            timer.Start();
+            z = logic.GetListData("people");
+            timer.Stop();
+
+            Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
+
+
+            logic.DeleteData("people");
         }
     }
 }
