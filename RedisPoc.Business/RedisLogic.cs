@@ -71,5 +71,31 @@ namespace RedisPoc.Business
                 return client.GetAllKeys();
             }
         }
+
+        public bool SetHashData(string key, List<KeyValuePair<string,string>> data)
+        {
+            using (var client = manager.GetClient())
+            {
+                client.SetRangeInHash(key, data);
+
+                return true;
+            }
+        }
+
+        public List<string> GetHashKeys(string key)
+        {
+            using (var client = manager.GetClient())
+            {
+                return client.GetHashKeys(key);
+            }
+        }
+
+        public List<string> GetHashValues(string key)
+        {
+            using (var client = manager.GetClient())
+            {
+                return client.GetHashValues(key);
+            }
+        }
     }
 }
