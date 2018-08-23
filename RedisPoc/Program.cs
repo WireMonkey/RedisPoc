@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RedisPoc.Business;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -39,16 +38,13 @@ namespace RedisPoc
             timer.Stop();
             Console.WriteLine($"Adding {saveData.Count} rows took {timer.ElapsedMilliseconds}ms.");
 
-            timer.Reset();
-            timer.Start();
+            timer.Restart();
             var z = logic.GetListData("people");
             timer.Stop();
 
             Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
 
-            //logic.DeleteData("people");
-
-            //Check spee of geting list data
+            //Check speed of geting list data
             for (int i = 0; i < 10; i++)
             {
                 data = dataGen.GetRandomData(2000);
@@ -57,42 +53,38 @@ namespace RedisPoc
 
                 logic.SetListData("people", saveData);
 
-                timer.Reset();
-                timer.Start();
+                timer.Restart();
                 z = logic.GetListData("people");
                 timer.Stop();
 
                 Console.WriteLine($"Getting {z.Count} rows took {timer.ElapsedMilliseconds}ms.");
             }
 
+            //Check speed of geting hash data
             for (int i = 0; i < 10; i++)
             {
                 var junk = dataGen.RandomHashData(2000);
                 logic.SetHashData("junk", junk);
-                
-                timer.Reset();
-                timer.Start();
+
+                timer.Restart();
                 var w = logic.GetHashValues("junk");
                 timer.Stop();
 
                 Console.WriteLine($"Getting {w.Count} hash values took {timer.ElapsedMilliseconds}ms.");
             }
 
-            timer.Reset();
-            timer.Start();
+            timer.Restart();
             var q = logic.GetHashKeys("junk");
             timer.Stop();
 
             Console.WriteLine($"Getting {q.Count} hash keys took {timer.ElapsedMilliseconds}ms.");
 
-            timer.Reset();
-            timer.Start();
+            timer.Restart();
             var e = logic.GetSingleHashValue("junk", q.First());
             timer.Stop();
             Console.WriteLine($"Getting specific hash value took {timer.ElapsedMilliseconds}ms.");
 
-            timer.Reset();
-            timer.Start();
+            timer.Restart();
             //cleanup
             logic.DeleteData("basicCall");
             logic.DeleteData("people");
