@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace RedisPoc.Business
 {
     public class RandomData
     {
-        public dynamic GetRandomData(int rows)
+        public JArray GetRandomData(int rows)
         {
             var dataToGen = new
             {
@@ -81,7 +82,7 @@ namespace RedisPoc.Business
             request.AddParameter("undefined", JsonConvert.SerializeObject(dataToGen), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
-            return JsonConvert.DeserializeObject(response.Content);
+            return (JArray)JsonConvert.DeserializeObject(response.Content);
         }
     }
 }

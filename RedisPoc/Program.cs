@@ -1,5 +1,8 @@
-﻿using RedisPoc.Business;
+﻿using Newtonsoft.Json;
+using RedisPoc.Business;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RedisPoc
 {
@@ -28,8 +31,14 @@ namespace RedisPoc
             var dataGen = new RandomData();
 
             var data = dataGen.GetRandomData(10);
+            var saveData = (from d in data
+                            select JsonConvert.SerializeObject(d)).ToList();
 
-            Console.WriteLine(data);
+            logic.SetListData("people", saveData);
+
+            var z = logic.GetListData("people");
+
+            Console.WriteLine(string.Join("/r/n", z));
         }
     }
 }

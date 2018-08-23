@@ -1,6 +1,8 @@
 ﻿using ServiceStack.Redis;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace RedisPoc.Business
 {
@@ -31,6 +33,14 @@ namespace RedisPoc.Business
                 client.AddRangeToList(key, data);
 
                 return true;
+            }
+        }
+
+        public List<string> GetListData(string key)
+        {
+            using (var client = manager.GetClient())
+            {
+                return client.GetAllItemsFromList(key);
             }
         }
 
