@@ -24,6 +24,12 @@ namespace RedisPoc
             var y = logic.GetAllKeys();
 
             Console.WriteLine(string.Join(", ",y));
+
+            var dataGen = new RandomData();
+
+            var data = dataGen.GetRandomData(10);
+
+            Console.WriteLine(data);
         }
     }
 }
