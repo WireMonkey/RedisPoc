@@ -10,7 +10,7 @@ namespace RedisPoc.Business
 
         public RedisLogic()
         {
-            manager = new RedisManagerPool("");
+            manager = new RedisManagerPool("ec2-18-222-58-156.us-east-2.compute.amazonaws.com");
         }
 
         public T GetData<T>(string key)
@@ -31,6 +31,34 @@ namespace RedisPoc.Business
                 client.AddRangeToList(key, data);
 
                 return true;
+            }
+        }
+
+        public bool SetStringData(string key, string data)
+        {
+            using (var client = manager.GetClient())
+            {
+                client.Add<string>(key, data);
+
+                return true;
+            }
+        }
+
+        public bool DeleteData(string key)
+        {
+            using (var clinet = manager.GetClient())
+            {
+                clinet.Remove(key);
+
+                return true;
+            }
+        }
+
+        public List<string> GetAllKeys()
+        {
+            using (var client = manager.GetClient())
+            {
+                return client.GetAllKeys();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RedisPoc.Business;
+using System;
 
 namespace RedisPoc
 {
@@ -6,7 +7,24 @@ namespace RedisPoc
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var logic = new RedisLogic();
+
+            logic.SetStringData("basicCall", "Hello world");
+
+            var x = logic.GetData<string>("basicCall");
+
+            Console.WriteLine(x);
+
+            logic.DeleteData("basicCall");
+
+            x = logic.GetData<string>("basicCall");
+
+            Console.WriteLine(x);
+
+            var y = logic.GetAllKeys();
+
+            Console.WriteLine(string.Join(", ",y));
         }
     }
 }
+
