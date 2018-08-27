@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RedisPoc.poco;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -85,7 +86,7 @@ namespace RedisPoc.Business
             return (JArray)JsonConvert.DeserializeObject(response.Content);
         }
 
-        public List<KeyValuePair<string,string>> RandomHashData(int rows)
+        public List<KeyValuePair<string, string>> RandomHashData(int rows)
         {
             var dataToGen = new
             {
@@ -113,6 +114,86 @@ namespace RedisPoc.Business
             IRestResponse response = client.Execute(request);
 
             return JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(response.Content);
+        }
+
+        public List<PersonData> RandomPersonData(int rows)
+        {
+            var dataToGen = new
+            {
+                rowsToReturn = rows,
+                columns = new List<object>
+                {
+                    new
+                    {
+                        columnName = "FirstName",
+                        function = "first",
+                    },
+                    new
+                    {
+                        columnName = "LastName",
+                        function = "last",
+                    },
+                    new
+                    {
+                        columnName = "Address",
+                        function = "address",
+                    },
+                    new
+                    {
+                        columnName = "City",
+                        function = "city",
+                    },
+                    new
+                    {
+                        columnName = "State",
+                        function = "state",
+                    },
+                    new
+                    {
+                        columnName = "Zip",
+                        function = "zip",
+                    },
+                    new
+                    {
+                        columnName = "Ssn",
+                        function = "ssn",
+                    },
+                    new
+                    {
+                        columnName = "Gender",
+                        function = "gender",
+                    },
+                    new
+                    {
+                        columnName = "Ssn",
+                        function = "ssn",
+                    },
+                    new
+                    {
+                        columnName = "Age",
+                        function = "age"
+                    },
+                    new
+                    {
+                        columnName = "Birthday",
+                        function = "birthday"
+                    },
+                    new
+                    {
+                        columnName = "Notes",
+                        function = "paragraph"
+                    }
+                }
+            };
+
+            var client = new RestClient("https://lscx1zn8ib.execute-api.us-east-2.amazonaws.com/dev/randomData");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Cache-Control", "no-cache");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("undefined", JsonConvert.SerializeObject(dataToGen), ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            return JsonConvert.DeserializeObject<List<PersonData>>(response.Content);
         }
     }
 }
