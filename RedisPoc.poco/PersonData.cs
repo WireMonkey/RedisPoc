@@ -27,7 +27,5 @@ namespace RedisPoc.poco
         public string Age { get; set; }
         [Key(9)]
         public string Birthday { get; set; }
-        [Key(10)]
-        public string Notes { get; set; }
     }
 }

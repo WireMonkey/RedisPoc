@@ -177,11 +177,6 @@ namespace RedisPoc.Business
                     {
                         columnName = "Birthday",
                         function = "birthday"
-                    },
-                    new
-                    {
-                        columnName = "Notes",
-                        function = "paragraph"
                     }
                 }
             };

@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MessagePack" Version="1.7.3.4" />
     <PackageReference Include="ServiceStack.Redis" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RedisPoc.Business\RedisPoc.Business.csproj" />
+    <ProjectReference Include="..\RedisPoc.poco\RedisPoc.poco.csproj" />
   </ItemGroup>
 
 </Project>
