@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RedisPoc.Business
 {
@@ -12,7 +13,7 @@ namespace RedisPoc.Business
 
         public RedisLogic()
         {
-            manager = new RedisManagerPool("ec2-18-222-58-156.us-east-2.compute.amazonaws.com");
+            manager = new RedisManagerPool("ec2-18-191-90-218.us-east-2.compute.amazonaws.com");
         }
 
         public T GetData<T>(string key)
@@ -25,7 +26,7 @@ namespace RedisPoc.Business
             }
         }
 
-        public bool SetListData(string key,List<string> data)
+        public bool SetListData(string key, List<string> data)
         {
             var x = new List<string>();
             using (var client = manager.GetClient())
@@ -72,7 +73,7 @@ namespace RedisPoc.Business
             }
         }
 
-        public bool SetHashData(string key, List<KeyValuePair<string,string>> data)
+        public bool SetHashData(string key, List<KeyValuePair<string, string>> data)
         {
             using (var client = manager.GetClient())
             {
@@ -104,6 +105,56 @@ namespace RedisPoc.Business
             {
                 return client.GetValueFromHash(key, id);
             }
+        }
+
+        public bool SetHashEntity<T>(string key, T data)
+        {
+            using (var client = manager.GetClient())
+            {
+                client.StoreAsHash<T>(data);
+
+                return true;
+            }
+        }
+
+        public bool SetListPipeline(string key, List<string> datas)
+        {
+
+            using (var client = manager.GetClient())
+            {
+                using (var pipe = client.CreatePipeline())
+                {
+                    foreach (var data in datas)
+                    {
+                        pipe.QueueCommand(x => x.AddItemToList(key, data));
+                    }
+
+                    pipe.Flush();
+                }
+
+            }
+
+            return true;
+        }
+
+        public bool SetListPipelineAsParallel(string key, List<string> datas)
+        {
+
+            using (var client = manager.GetClient())
+            {
+                using (var pipe = client.CreatePipeline())
+                {
+                    foreach (var data in datas.AsParallel())
+                    {
+                        pipe.QueueCommand(x => x.AddItemToList(key, data));
+                    }
+
+                    pipe.Flush();
+                }
+
+            }
+
+            return true;
         }
     }
 }
